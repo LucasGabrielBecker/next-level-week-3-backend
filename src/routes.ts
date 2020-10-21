@@ -13,6 +13,9 @@ routes.get('/orphanages/:id', OrphanagesController.show);
 routes.post('/orphanages', upload.array('images') ,OrphanagesController.create);
 
 routes.post('/createUser', AuthController.createUser)
+routes.post('/login', AuthController.login)
 routes.get('/users', AuthController.listUsers)
+
+routes.post('/forgot_password', AuthController.forgot_password)
 
 export default routes;

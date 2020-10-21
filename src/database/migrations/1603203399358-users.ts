@@ -19,8 +19,12 @@ export class users1603203399358 implements MigrationInterface {
                 type:'varchar',
               },
               {
-                name:'password',
+                name:'passwordResetToken',
                 type:'varchar',
+              },
+              {
+                name:'passwordResetExpires',
+                type:'date',
               },
               {
                 name:'email',

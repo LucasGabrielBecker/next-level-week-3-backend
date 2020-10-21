@@ -13,4 +13,10 @@ export default class User{
 
     @Column()
     email: string;
+
+    @Column({select:false, nullable: true})
+    passwordResetToken:string;
+
+    @Column({select:false, nullable: true})
+    passwordResetExpires:Date;
 }
