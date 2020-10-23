@@ -3,6 +3,14 @@ import {getRepository} from 'typeorm';
 import Orphanage from "../models/Orphanage"
 import orphanageView from "../views/orphanages_view"
 import * as Yup from 'yup';
+import * as fs from 'fs;
+import * as AWS from 'aws-sdk;
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY
+});
+
 
 
 
@@ -58,6 +66,21 @@ export default {
             open_on_weekends,
             images
         };
+        
+        const params = {
+         Bucket: 'images-happy', // pass your bucket name
+         Key: 'contacts.csv', // file will be saved as testBucket/contacts.csv
+         Body: JSON.stringify(data, null, 2)
+         };
+        
+        images.map(image=>{
+            params.key=image.filename
+            s3.upload(params, function(s3Err, data){
+                if(s3Err) throw s3Err
+                console.log(`file: ${image.filename} uploaded succesfully`
+            }
+        })
+         
 
         const schema = Yup.object().shape({
             name: Yup.string().required(),
