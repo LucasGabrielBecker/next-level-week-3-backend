@@ -3,8 +3,8 @@ import {getRepository} from 'typeorm';
 import Orphanage from "../models/Orphanage"
 import orphanageView from "../views/orphanages_view"
 import * as Yup from 'yup';
-import * as fs from 'fs;
-import * as AWS from 'aws-sdk;
+import * as fs from 'fs';
+import * as AWS from 'aws-sdk';
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.ACCESS_KEY,
@@ -78,7 +78,7 @@ export default {
             s3.upload(params, function(s3Err, data){
                 if(s3Err) throw s3Err
                 console.log(`file: ${image.filename} uploaded succesfully`);
-            }
+            });
         })
          
 
