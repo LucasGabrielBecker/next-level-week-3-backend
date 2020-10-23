@@ -77,7 +77,7 @@ export default {
             params.key=image.filename
             s3.upload(params, function(s3Err, data){
                 if(s3Err) throw s3Err
-                console.log(`file: ${image.filename} uploaded succesfully`
+                console.log(`file: ${image.filename} uploaded succesfully`);
             }
         })
          
