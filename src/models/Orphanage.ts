@@ -1,35 +1,34 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn} from 'typeorm';
-import Image from "./Image"
+import {Typegoose, prop, arrayProp} from "typegoose"
 
-@Entity('orphanages')
-export default class Orphanage{
-    @PrimaryGeneratedColumn('increment')
-    id:number;
-
-    @Column()
-    name: string;
-
-    @Column()
-    latitude: number;
-
-    @Column()
-    longitude: number;
-
-    @Column()
-    about: string;
-
-    @Column()
-    instructions: string;
-
-    @Column()
-    opening_hours: string;
+class Orphanage extends Typegoose{
+    @prop({required:true})
+    name!:string;
     
-    @Column()
-    open_on_weekends: boolean;
+    @prop({required:true})
+    latitude!: number;
 
-    @OneToMany(()=> Image, image => image.orphanage , {
-        cascade:['insert', 'update']
-    })
-    @JoinColumn({name: 'orphanage_id'})
-    images:Image[];
+    @prop({required:true})
+    longitude!: number;
+    
+    @prop({required:true})
+    about!: string;
+
+    @prop({required:true})
+    instructions!: string;
+
+    @prop({required:true})
+    opening_hours:! string;
+
+
+    @prop({required:true})
+    open_on_weekends!: string;
+
+    @arrayProp({required:true, items:String})
+    imagesPath!:string;
+    
+    
 }
+
+const Orphanages = new Orphanage().getModelForClass(Orphanage);
+
+export default Orphanages;

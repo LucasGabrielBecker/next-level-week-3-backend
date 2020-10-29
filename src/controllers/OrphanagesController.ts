@@ -1,17 +1,15 @@
 import {Request, Response} from "express"
 import {getRepository} from 'typeorm';
-import Orphanage from "../models/Orphanage"
+import Orphanages from "../models/Orphanage"
 import orphanageView from "../views/orphanages_view"
 import * as Yup from 'yup';
 import * as fs from 'fs';
 import * as AWS from 'aws-sdk';
 
-const s3 = new AWS.S3({
-    accessKeyId: process.env.ACCESS_KEY,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY
-});
 
-
+const BUCKET_NAME = 'images-happy';
+const IAM_USER_KEY = 'AKIAIVP3XOA7ZIJOVSNA';
+const IAM_USER_SECRET = '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';
 
 
 export default {
@@ -55,7 +53,8 @@ export default {
         const images = requestImages.map(image => {
             return {path : image.filename}
         })
-
+        
+        console.log(images)
         const data = {
             name,
             latitude,
@@ -67,20 +66,31 @@ export default {
             images
         };
         
-        const params = {
-         Bucket: 'images-happy', // pass your bucket name
-         Key: 'contacts.csv', // file will be saved as testBucket/contacts.csv
-         Body: JSON.stringify(data, null, 2)
-         };
-        
-        images.map(image=>{
-            params.key=image.filename
-            s3.upload(params, function(s3Err, data){
-                if(s3Err) throw s3Err
-                console.log(`file: ${image.filename} uploaded succesfully`);
+            let s3bucket = new AWS.S3({
+              accessKeyId: IAM_USER_KEY,
+              secretAccessKey: IAM_USER_SECRET,
+              Bucket: BUCKET_NAME,
             });
-        })
-         
+
+            images.map(image=>{
+                s3bucket.createBucket(function () {
+                    var params = {
+                      Bucket: BUCKET_NAME,
+                      Key: image.name,
+                      Body: image
+                    };
+                    s3bucket.upload(params, function (err, data) {
+                      if (err) {
+                        console.log('error in callback');
+                        console.log(err);
+                      }
+                      console.log('success');
+                      console.log(data);
+                    });
+                });
+            })
+        
+       
 
         const schema = Yup.object().shape({
             name: Yup.string().required(),
@@ -103,12 +113,24 @@ export default {
         
             await orphanagesRepository.save(orphanage);
         
-            console.log('created succesfully')
             return response.status(201).json(orphanage)
 
         } catch (error) {
 
             return response.status(400).json({message:"Error", errors: error.errors})
         }
-    } 
+    },
+
+    async testCreate(request:Request, response:Response){
+        const data = request.body;
+        console.log(data)
+        try {
+            const createdOrphanage = await Orphanages.create({data})
+            return response.json(data)
+            
+        } catch (error) {
+            //console.error(error)
+            return response.json({message: "you messed it up"})
+        }
+    }
 }

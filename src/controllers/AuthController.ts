@@ -1,7 +1,6 @@
 import {Request, Response} from "express"
 import {getRepository, getConnection} from 'typeorm';
 import { reduceEachTrailingCommentRange } from "typescript";
-import Users from "../models/Users"
 import UsersView from "../views/users_view"
 
 import * as crypto from 'crypto';
@@ -115,6 +114,12 @@ export default{
             console.log(error)
             response.status(400).json({error:'Error on getting user email'})
         }
+    },
+
+    async testingRoute(request:Request, response:Response){
+        const files = request.files
+        console.log(files)
+        return response.send('returned')
     }
 
 }

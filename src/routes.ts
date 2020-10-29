@@ -17,5 +17,7 @@ routes.post('/login', AuthController.login)
 routes.get('/users', AuthController.listUsers)
 
 routes.post('/forgot_password', AuthController.forgot_password)
+routes.post('/teste', upload.array('images') , AuthController.testingRoute)
+routes.post('/testModel', OrphanagesController.testCreate)
 
 export default routes;
